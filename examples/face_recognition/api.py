@@ -62,7 +62,7 @@ def _trim_css_to_bounds(css, image_shape):
 
 def face_distance(face_encodings, face_to_compare):
     """
-    Given a list of face encodings, compare them to a known face encoding and get a euclidean distance
+    Given a list of face encodings, compare them to a known face encoding and get a Euclidean distance
     for each comparison face. The distance tells you how similar the faces are.
 
     :param face_encodings: List of face encodings to compare
@@ -91,7 +91,7 @@ def load_image_file(file, mode='RGB'):
 
 def _raw_face_locations(img, number_of_times_to_upsample=1, model="hog"):
     """
-    Returns an array of bounding boxes of human faces in a image
+    Returns an array of bounding boxes of human faces in an image
 
     :param img: An image (as a numpy array)
     :param number_of_times_to_upsample: How many times to upsample the image looking for faces. Higher numbers find smaller faces.
@@ -107,13 +107,13 @@ def _raw_face_locations(img, number_of_times_to_upsample=1, model="hog"):
 
 def face_locations(img, number_of_times_to_upsample=1, model="hog"):
     """
-    Returns an array of bounding boxes of human faces in a image
+    Returns an array of bounding boxes of human faces in an image
 
     :param img: An image (as a numpy array)
     :param number_of_times_to_upsample: How many times to upsample the image looking for faces. Higher numbers find smaller faces.
     :param model: Which face detection model to use. "hog" is less accurate but faster on CPUs. "cnn" is a more accurate
                   deep-learning model which is GPU/CUDA accelerated (if available). The default is "hog".
-    :return: A list of tuples of found face locations in css (top, right, bottom, left) order
+    :return: A list of tuples of found face locations in CSS (top, right, bottom, left) order
     """
     if model == "cnn":
         return [_trim_css_to_bounds(_rect_to_css(face.rect), img.shape) for face in _raw_face_locations(img, number_of_times_to_upsample, "cnn")]
@@ -123,7 +123,7 @@ def face_locations(img, number_of_times_to_upsample=1, model="hog"):
 
 def _raw_face_locations_batched(images, number_of_times_to_upsample=1, batch_size=128):
     """
-    Returns an 2d array of dlib rects of human faces in a image using the cnn face detector
+    Returns a 2D array of dlib rects of human faces in an image using the CNN face detector
 
     :param images: A list of images (each as a numpy array)
     :param number_of_times_to_upsample: How many times to upsample the image looking for faces. Higher numbers find smaller faces.
@@ -134,14 +134,14 @@ def _raw_face_locations_batched(images, number_of_times_to_upsample=1, batch_siz
 
 def batch_face_locations(images, number_of_times_to_upsample=1, batch_size=128):
     """
-    Returns an 2d array of bounding boxes of human faces in a image using the cnn face detector
+    Returns a 2D array of bounding boxes of human faces in an image using the CNN face detector
     If you are using a GPU, this can give you much faster results since the GPU
     can process batches of images at once. If you aren't using a GPU, you don't need this function.
 
     :param images: A list of images (each as a numpy array)
     :param number_of_times_to_upsample: How many times to upsample the image looking for faces. Higher numbers find smaller faces.
     :param batch_size: How many images to include in each GPU processing batch.
-    :return: A list of tuples of found face locations in css (top, right, bottom, left) order
+    :return: A list of tuples of found face locations in CSS (top, right, bottom, left) order
     """
     def convert_cnn_detections_to_css(detections):
         return [_trim_css_to_bounds(_rect_to_css(face.rect), images[0].shape) for face in detections]
@@ -167,12 +167,12 @@ def _raw_face_landmarks(face_image, face_locations=None, model="large"):
 
 def face_landmarks(face_image, face_locations=None, model="large"):
     """
-    Given an image, returns a dict of face feature locations (eyes, nose, etc) for each face in the image
+    Given an image, returns a dict of face feature locations (eyes, nose, etc.) for each face in the image
 
-    :param face_image: image to search
+    :param face_image: Image to search
     :param face_locations: Optionally provide a list of face locations to check.
     :param model: Optional - which model to use. "large" (default) or "small" which only returns 5 points but is faster.
-    :return: A list of dicts of face feature locations (eyes, nose, etc)
+    :return: A list of dicts of face feature locations (eyes, nose, etc.)
     """
     landmarks = _raw_face_landmarks(face_image, face_locations, model)
     landmarks_as_tuples = [[(p.x, p.y) for p in landmark.parts()] for landmark in landmarks]
@@ -211,6 +211,7 @@ def face_encodings(face_image, known_face_locations=None, num_jitters=1, model="
     :return: A list of 128-dimensional face encodings (one for each face in the image)
     """
     raw_landmarks = _raw_face_landmarks(face_image, known_face_locations, model)
+
     return [np.array(face_encoder.compute_face_descriptor(face_image, raw_landmark_set, num_jitters)) for raw_landmark_set in raw_landmarks]
 
 
